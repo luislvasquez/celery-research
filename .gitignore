@@ -1,0 +1,10 @@
+## Backend
+# python cache
+**/__pycache__/**
+# pyenv explicit version setup
+.python-version
+# pipenv lock
+Pipfile.lock
+
+# vscode settings
+.vscode/*
