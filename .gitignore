@@ -8,3 +8,6 @@ Pipfile.lock
 
 # vscode settings
 .vscode/*
+
+# personal folder
+_playground/**

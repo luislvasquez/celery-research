@@ -10,3 +10,37 @@ services:
       - ./src/backend:/app
     environment:
       PORT: "8000"
+
+  database:
+    build:
+      context: .
+      dockerfile: docker/database.Dockerfile
+    ports:
+      - "5432:5432"
+    command:
+      postgres -c config_file=/etc/postgresql.conf
+    volumes:
+      - ./src/database/postgresql.conf:/etc/postgresql.conf
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d-d  db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      PGDATA: /data
+      POSTGRES_USER: "user"
+      POSTGRES_DB: "db"
+      POSTGRES_PASSWORD: "password"
+
+  migration:
+    build:
+      context: .
+      dockerfile: docker/migration.Dockerfile
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      POSTGRES_REMOTE_HOST: database
+      POSTGRES_REMOTE_USER: "user"
+      POSTGRES_REMOTE_DB: "db"
+      POSTGRES_REMOTE_PASSWORD: "password"

@@ -1,6 +1,5 @@
 FROM python:3.9.5-slim-buster
 
-# 'backend-run.sh' needs execution permission
 COPY docker/scripts/backend-run.sh backend-run.sh
 
 RUN mkdir /app
