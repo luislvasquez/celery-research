@@ -10,6 +10,12 @@ services:
       - ./src/backend:/app
     environment:
       PORT: "8000"
+      PGDATA: /data
+      POSTGRES_USER: "user"
+      POSTGRES_DB: "db"
+      POSTGRES_PORT: "5432"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_HOST: database
 
   database:
     build:
@@ -22,7 +28,7 @@ services:
     volumes:
       - ./src/database/postgresql.conf:/etc/postgresql.conf
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d-d  db"]
+      test: ["CMD-SHELL", "pg_isready -U user -d db"]
       interval: 5s
       timeout: 5s
       retries: 5

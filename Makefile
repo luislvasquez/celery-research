@@ -6,6 +6,9 @@ build:
 	docker-compose build database	
 	docker-compose build migration
 
+migrate:
+	docker-compose up --build migration
+
 up: build clean
 	docker-compose up
 
