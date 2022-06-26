@@ -61,9 +61,9 @@ def get_networks(request_time: datetime):
     return networks
 
 def create_network(new_network: PostRequestPayload, request_time: datetime):
-    time.sleep(new_network.delayInSeconds)
     with db_session() as db:
         network_uuid = db.execute(insert_network_query(new_network, "ONLINE")).scalar_one()
+        time.sleep(new_network.delayInSeconds)
         db.execute(update_network_elapsed_timestamps_query(network_uuid, request_time, datetime.now()))
         db.commit()
 

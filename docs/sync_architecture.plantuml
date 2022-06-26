@@ -1,0 +1,37 @@
+@startuml Synchronous architecture
+!pragma teoz true
+skinparam DefaultFontName Mono
+skinparam DefaultFontSize 12
+skinparam component {
+  BackgroundColor<<Apache>> LightCoral
+  BorderColor<<Apache>> #FF6655
+  BorderColor black
+  ArrowColor #FF6655
+  ArrowFontColor #323232
+}
+
+{post_start} Client -> "Web App\n(FastAPI)" as WebApp : HTTP:POST /networks
+WebApp -> "Database\n(PostgreSQL)" as DB : Sync INSERT INTO networks;
+activate DB
+rnote over DB
+    New available
+    network takes
+    time to create
+endrnote
+DB -> WebApp : Fully created network
+deactivate DB
+{post_end} WebApp -> Client : Reponse HTTP/200 with fully created network
+{post_start} <-> {post_end} : Long\nexecution\ntime
+Client -> WebApp : HTTP:GET /networks
+WebApp -> DB : SELECT * FROM networks;
+DB -> WebApp : networks[]
+WebApp -> Client: HTTP/200 with list of networks
+
+box "Server"
+participant WebApp
+end box
+
+box "DB"
+participant DB
+end box
+@enduml
