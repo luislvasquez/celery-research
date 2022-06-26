@@ -14,17 +14,15 @@ POSTGRES_HOST = os.environ.get("POSTGRES_HOST")
 
 
 # SYNC ENGINE INITIALIZATION
-SQLALCHEMY_DB_URI = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+SQLALCHEMY_SYNC_DB_URI = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 engine = create_engine(
-    SQLALCHEMY_DB_URI,
+    SQLALCHEMY_SYNC_DB_URI,
     pool_pre_ping=True,
     pool_size=4, 
     max_overflow=6
 )
 
-connection = engine.connect()
 SessionLocal = sessionmaker(autocommit=False, expire_on_commit=False, autoflush=False, bind=engine)
-
 
 @contextmanager
 def db_session() -> Generator[Session, None, None]:
@@ -34,18 +32,16 @@ def db_session() -> Generator[Session, None, None]:
     finally:
         db.close()
 
-# SYNC ENGINE INITIALIZATION
-SQLALCHEMY_DB_URI = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+# ASYNC ENGINE INITIALIZATION
+SQLALCHEMY_ASYNC_DB_URI = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 async_engine = create_async_engine(
-    SQLALCHEMY_DB_URI,
+    SQLALCHEMY_ASYNC_DB_URI,
     pool_pre_ping=True,
     pool_size=4, 
     max_overflow=6,
 )
 
-connection = engine.connect()
 AsyncSessionLocal = sessionmaker(autocommit=False, expire_on_commit=False, autoflush=False, bind=async_engine, class_=AsyncSession)
-
 
 @asynccontextmanager
 async def async_db_session() -> Generator[AsyncSession, None, None]:

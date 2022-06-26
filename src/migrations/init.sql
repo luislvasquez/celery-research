@@ -18,4 +18,9 @@ CREATE TABLE networks (
 );
 
 ---- Population
--- INSERT INTO networks ()
+INSERT INTO networks (name, location, customer, status)
+VALUES
+    ('mig_network_1', 'Tangamandapio', 'migration_customer', 'ONLINE'),
+    ('mig_network_2', 'Narnia', 'migration_customer', 'ONLINE'),
+    ('mig_network_3', 'Hogwarts', 'migration_customer', 'ONLINE')
+;

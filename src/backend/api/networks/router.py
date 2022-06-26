@@ -10,6 +10,23 @@ router = APIRouter(
     prefix='/networks',
 )
 
+@router.get("/")
+def get_networks():
+
+    start = datetime.now()
+    # Heavy CPU process
+    networks_list = controller.get_networks(request_time=start)
+    elapsed_time = datetime.now() - start
+    response = {
+        "event": "Networks fetching",
+        "status": "COMPLETED",
+        "values": {
+            "data": networks_list,
+            "total": len(networks_list),
+        }
+    }
+    return response
+
 @router.post("/")
 def create_network(body: PostRequestPayload):
     start = datetime.now()
@@ -25,17 +42,18 @@ def create_network(body: PostRequestPayload):
             "name": body.name,
             "customer": body.customer,
             "location": body.location,
-            "elapsedTime": elapsed_time.seconds
+            "elapsedTime": elapsed_time.seconds,
+            "total": 1,
         }
     }
     return response
 
-@router.post("/async_endpoint/")
-async def async_create_network(body: PostRequestPayload):
+@router.post("/async/")
+async def full_async_create_network(body: PostRequestPayload):
     start = datetime.now()
     
     # Heavy CPU process
-    asyncio.create_task(controller.async_call_create_network(body, request_time=start))
+    await controller.async_call_and_storage_create_network(body, request_time=start)
 
     elapsed_time = datetime.now() - start
     response = {
@@ -45,7 +63,8 @@ async def async_create_network(body: PostRequestPayload):
             "name": body.name,
             "customer": body.customer,
             "location": body.location,
-            "elapsedTime": elapsed_time.seconds
+            "elapsedTime": elapsed_time.seconds,
+            "total": 1,
         }
     }
     return response
